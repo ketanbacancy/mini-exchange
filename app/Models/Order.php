@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\OrderSide;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,8 +22,8 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'side' => \App\Enums\OrderSide::class,
-        'status' => \App\Enums\OrderStatus::class,
+        'side' => OrderSide::class,
+        'status' => OrderStatus::class,
         'price' => 'decimal:8',
         'amount' => 'decimal:8',
         'locked_usd' => 'decimal:8',
