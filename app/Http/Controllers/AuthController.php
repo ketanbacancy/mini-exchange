@@ -9,29 +9,43 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        try {
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
 
-            return response()->noContent();
+                return response()->noContent();
+            }
+
+            return response()->json([
+                'message' => 'The provided credentials do not match our records.',
+            ], 401);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred during login.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'The provided credentials do not match our records.',
-        ], 401);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        try {
+            Auth::logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return response()->noContent();
+            return response()->noContent();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred during logout.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
